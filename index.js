@@ -1,6 +1,3 @@
-// AI Content Generator - NO LIMITS VERSION
-// Lets AI generate full, complete content
-
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -73,7 +70,6 @@ app.get('/', (req, res) => {
     });
 });
 
-// Helper to wait between retries
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -100,7 +96,6 @@ app.post('/generate', async (req, res) => {
 
         console.log('Generating:', contentType, 'for:', topic);
 
-        // Retry up to 3 times if rate limited
         let maxRetries = 3;
         let attempt = 0;
         let response;
@@ -117,18 +112,17 @@ app.post('/generate', async (req, res) => {
                         }],
                         generationConfig: {
                             temperature: 0.9,
-                            maxOutputTokens: 2048
+                            maxOutputTokens: 8192
                         }
                     })
                 }
             );
 
-            // Handle rate limit (429)
             if (response.status === 429) {
                 attempt++;
                 console.log('Rate limited, waiting... attempt', attempt);
                 if (attempt < maxRetries) {
-                    await sleep(3000); // Wait 3 seconds
+                    await sleep(3000);
                     continue;
                 } else {
                     return res.status(429).json({ 
@@ -137,7 +131,6 @@ app.post('/generate', async (req, res) => {
                 }
             }
 
-            // Other errors
             if (!response.ok) {
                 console.error('AI error:', response.status);
                 const errorText = await response.text();
@@ -145,13 +138,11 @@ app.post('/generate', async (req, res) => {
                 return res.status(500).json({ error: 'AI generation failed' });
             }
 
-            // Success - break out of retry loop
             break;
         }
 
         const data = await response.json();
         
-        // Check if we got content
         if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
             console.error('No content in response:', data);
             return res.status(500).json({ error: 'No content generated' });
@@ -199,5 +190,5 @@ app.get('/tones', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('AI Content Generator (Unlimited) running on port', PORT);
-    console.log('Max tokens: 2048 - Full content generation enabled');
+    console.log('Max tokens: 8192 (MAXIMUM) - Truly unlimited content generation');
 });
