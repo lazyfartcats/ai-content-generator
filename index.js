@@ -13,7 +13,7 @@ const API_KEY = process.env.API_KEY;
 const CONTENT_TYPES = {
     tweet: {
         name: 'Twitter Post',
-        prompt: 'Write a complete viral tweet about: [TOPIC]. IMPORTANT: Must be under 270 characters total. Use emojis and make it engaging. End with a complete sentence - no cutting off mid-word. Style: [TONE].'
+        prompt: 'Write a SHORT, complete tweet (max 200 characters) about: [TOPIC]. Make it punchy and viral. Use 1-2 emojis. CRITICAL: Must end with a period, exclamation point, or question mark. Do not cut off mid-sentence. Style: [TONE].'
     },
     instagram: {
         name: 'Instagram Caption',
@@ -104,8 +104,9 @@ app.post('/generate', async (req, res) => {
                         parts: [{ text: prompt }]
                     }],
                     generationConfig: {
-                        temperature: 0.9,
-                        maxOutputTokens: 800
+                        temperature: 0.7,
+                        maxOutputTokens: 100,
+                        stopSequences: ["\n\n"]
                     }
                 })
             }
