@@ -104,10 +104,9 @@ app.post('/generate', async (req, res) => {
                         parts: [{ text: prompt }]
                     }],
                     generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 100,
-                        stopSequences: ["\n\n"]
-                    }
+                      temperature: 0.9,
+                      maxOutputTokens: 500
+                   }
                 })
             }
         );
@@ -162,3 +161,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('AI Content Generator running on port', PORT);
 });
+
